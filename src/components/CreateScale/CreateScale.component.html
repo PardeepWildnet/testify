@@ -1,0 +1,62 @@
+<section class="assign-test" v-if="loginRole === '2'">
+  <router-link to="/Dashboard/Masters/ScaleList">
+    <b-button variant="primary"> Go To Scale List</b-button>
+  </router-link>
+  <div class="createscale-container">
+    <div class="form-box">
+      <label class="headingForm">{{submitButtonText}} Scale</label>
+      <br>
+      <b-form @submit="onSubmit">
+        <b-container fluid>
+          <b-row class="my-1">
+            <b-col sm="4"><label for="input-none">Scale Name*</label></b-col>
+            <b-col sm="8">
+              <b-form-input id="name" name="Scale Name" type="text" v-model="createscaleform.scaleName" v-validate="'required'" placeholder="Enter Scale Name"></b-form-input>
+              <span v-show="errors.has('Scale Name')" class="help is-danger">{{ errors.first('Scale Name') }}</span>
+            </b-col>
+          </b-row>
+          <b-row class="my-1">
+            <b-col sm="4"><label for="input-none">Points*</label></b-col>
+            <b-col sm="8">
+              <b-form-input id="name" name="Points" type="text" v-model="createscaleform.scalePoint" v-validate="'required'" placeholder="Enter Points"></b-form-input>
+              <span v-show="errors.has('Points')" class="help is-danger">{{ errors.first('Points') }}</span>
+            </b-col>
+          </b-row>
+          <b-row class="my-1" v-if="isEdit">
+              <b-col sm="4"><label for="input-none">Is Active?</label></b-col>
+              <b-col sm="8" style="text-align: left;">
+                <label class="switch" style="width: 60px;">
+                      <input v-model="createscaleform.status" type="checkbox">
+                      <span class="slider round"></span>
+                  </label>
+              </b-col>
+          </b-row>
+        </b-container>
+        <br>
+        <b-button type="submit" variant="primary">{{submitButtonText}}</b-button>
+        <b-button type="reset" v-if="!isEdit" variant="secondary">Clear</b-button>
+        <div v-if="notifySuccess" style="margin-top: 10px;">
+          <span class="notification n-success">{{responseMessage}}</span>
+        </div>
+        <div v-if="notifyError" style="margin-top: 10px;">
+          <span class="notification n-error">{{errorMessage}}</span>
+        </div>
+      </b-form>
+    </div>
+  </div>
+   <!-- Modal Component -->
+   <!-- <b-modal size="sm" centered ref="notificationModal" v-model="show" title="Alert" :header-bg-variant="headerBgVariant" :header-text-variant="headerTextVariant" :body-bg-variant="bodyBgVariant" :body-text-variant="bodyTextVariant" :footer-bg-variant="footerBgVariant" :footer-text-variant="footerTextVariant">
+      <b-container fluid>
+        <b-row class="mb-1 text-center">
+          <b-col cols="12">{{ModalMessage}}</b-col>
+        </b-row>
+      </b-container>
+      <div slot="modal-footer" class="w-100">
+        <p class="float-left"></p>
+        <b-btn size="sm" class="float-right" style="margin-left: 5px;" variant="danger" @click="closeModal()">
+         OK
+        </b-btn>
+      </div>
+    </b-modal> -->
+    <!-- Modal Component -->
+</section>

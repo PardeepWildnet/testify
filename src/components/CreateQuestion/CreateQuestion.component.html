@@ -1,0 +1,174 @@
+<section v-if="loginRole === '3' || loginRole === '2'">
+    <router-link to="/Dashboard/QuestionBank">
+      <b-button variant="primary"> Go To Question Bank</b-button>
+    </router-link>
+<div class="login-container">
+  <div class="form-box">
+    <label class="headingForm">{{submitButtonText}} Question</label>
+    <br>
+    <b-form @submit="onSubmit">
+      <b-container fluid>
+        <b-row class="my-1">
+          <b-col sm="3"><label for="input-none">Question Type* </label></b-col>
+          <b-col sm="9">
+              <b-form-select v-model="createquestion.categoryId" name="Question Type" :options="questionTypeOptions" class="mb-3">
+              </b-form-select>
+          </b-col>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="3"><label for="input-none">Question*</label></b-col>
+          <b-col sm="9">
+            <vue-editor id="editor1" name="Question" placeholder="Enter Question" v-validate="'required'" v-model="createquestion.question"></vue-editor>
+            <span v-show="errors.has('Question')" class="help is-danger">{{ errors.first('Question') }}</span>
+          </b-col>
+        </b-row>
+        <br>
+        <b-row class="my-1">
+          <b-col sm="3"><label for="input-none">Scale*</label></b-col>
+          <b-col sm="8">
+            <b-form-select v-model="createquestion.scaleId" name="Scale" v-validate="'required'" :options="scaleOptions" class="mb-3">
+            </b-form-select>
+            <span v-show="errors.has('Scale')" class="help is-danger">{{ errors.first('Scale') }}</span>
+          </b-col>
+          <b-col sm="1" v-if="toShowScale">
+            <b-button class="w3-button w3-circle w3-blue" v-b-modal.modalScale variant="primary"><b>+</b></b-button>
+          </b-col>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="3"><label for="input-none">Subject*</label></b-col>
+          <b-col sm="8">
+            <b-form-select v-model="createquestion.subjectId" name="Subject" @change.native="subjectChange()" :options="subjectOptions" v-validate="'required'" class="mb-3">
+            </b-form-select>
+            <span v-show="errors.has('Subject')" class="help is-danger">{{ errors.first('Subject') }}</span>
+          </b-col>
+          <b-col sm="1" v-if="toShowSubject">
+            <b-button class="w3-circle w3-blue" v-b-modal.modalSubject variant="primary"><b>+</b></b-button>
+          </b-col>
+        </b-row>
+        <b-row class="my-1">
+            <b-col sm="3"><label for="input-none">Topic*</label></b-col>
+            <b-col sm="8">
+              <b-form-select :disabled="fetchingData" name="Topic" v-model="createquestion.topicId" :options="topicOptions" v-validate="'required'" class="mb-3">
+              </b-form-select>
+            <span v-show="errors.has('Topic')" class="help is-danger">{{ errors.first('Topic') }}</span>
+            </b-col>
+            <b-col sm="1" v-if="toShowTopic">
+              <b-button class="w3-button w3-circle w3-blue" v-b-modal.modalTopic variant="primary"><b>+</b></b-button>
+            </b-col>
+        </b-row>
+        <b-row class="my-1">
+            <b-col sm="3"><label for="input-none">Teacher Name*</label></b-col>
+            <b-col sm="8">
+              <b-form-select :disabled="fetchingData" name="Teacher Name" v-model="createquestion.teacherId" :options="teacherOptions" v-validate="'required'" class="mb-3">
+              </b-form-select>
+              <span v-show="errors.has('Teacher Name')" class="help is-danger">{{ errors.first('Teacher Name') }}</span>
+            </b-col>
+        </b-row>
+        <b-row id="answerDiv" style="margin-top: 10px;" class="my-1" v-for="(createanswer,key,index) in answers" v-bind:key="key">
+          <b-col sm="3"><label for="input-none">Answer option {{ key + 1 }}</label></b-col>
+          <b-col sm="8">
+            <vue-editor v-bind:id='"unique"+key' v-bind:name='"Answer "+(key + 1)' class="answerEditorClass" placeholder="Enter Answer" v-model="createanswer.answer"></vue-editor>
+          </b-col>
+          <b-col sm="1">
+            Correct?
+            <label class="answerCheckboxClass switch" style="width: 60px;">
+                <input v-model="createanswer.iscorrect" @click="answerCheckboxClick($event)" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+          </b-col>
+        </b-row>
+        <b-row class="my-1" style="margin-top: 5px;">
+          <b-col sm="3"></b-col>
+          <b-col sm="8">
+            <b-button v-on:click="addRow()" title="Add answer option" class="w3-blue" style="float: left;" variant="primary"><b>+</b></b-button>
+            <b-button v-on:click="removeRow()" v-if="toShowRemoveAnswer" class="w3-red" title="Add answer option" style="float: left; margin-left: 10px;"
+              variant="primary"><b>-</b></b-button>
+          </b-col>
+          <b-col sm="1"></b-col>
+        </b-row>
+        <b-row class="my-1">
+            <b-col sm="3"><label for="input-none">Explanation*</label></b-col>
+            <b-col sm="9">
+              <vue-editor id="editor2" name="Explanation" placeholder="Enter Explanation" v-validate="'required'" v-model="createquestion.explanation"></vue-editor>
+              <span v-show="errors.has('Explanation')" class="help is-danger">{{ errors.first('Explanation') }}</span>
+          </b-col>
+          </b-row>
+      </b-container>
+      <br>
+      <b-button type="submit" variant="primary">{{submitButtonText}}</b-button>
+      <b-button type="reset" v-if="!isEdit" variant="secondary">Clear</b-button>
+      <b-button @click="resetValues()" v-if="isEdit" variant="secondary">Reset</b-button>
+    </b-form>
+  </div>
+
+   <!-- Modal Component -->
+  <div>
+    <b-modal id="modalScale" ref="modalScale" title="Add Scale" @ok="addScale"
+    :header-bg-variant="headerBgVariant"
+    :header-text-variant="headerTextVariant"
+    :body-bg-variant="bodyBgVariant"
+    :body-text-variant="bodyTextVariant"
+    :footer-bg-variant="footerBgVariant"
+    :footer-text-variant="footerTextVariant">
+      <form @submit.stop.prevent="submitScale">
+        <b-form-input type="text" placeholder="Enter Scale" v-model="addscale.scaleName"></b-form-input>
+        <b-form-input type="text" style="margin-top: 13px;" placeholder="Enter Points" v-model="addscale.scalePoint"></b-form-input>
+      </form>
+      <div slot="modal-footer" class="w-100">
+          <p class="float-left"></p>
+          <b-btn size="sm" class="float-right" style="margin-left: 5px;" variant="secondary" @click="closeModalScale()">
+            Cancel
+          </b-btn>
+          <b-btn size="sm" class="float-right" variant="danger" @click="confirmationScale()">
+            OK
+          </b-btn>
+      </div>
+    </b-modal>
+
+    <b-modal id="modalSubject" ref="modalSubject" title="Add Subject" @ok="addSubject"
+    :header-bg-variant="headerBgVariant"
+    :header-text-variant="headerTextVariant"
+    :body-bg-variant="bodyBgVariant"
+    :body-text-variant="bodyTextVariant"
+    :footer-bg-variant="footerBgVariant"
+    :footer-text-variant="footerTextVariant">
+      <form @submit.stop.prevent="submitSubject">
+        <b-form-input type="text" placeholder="Enter Subject" v-model="addsubject.subjectName"></b-form-input>
+      </form>
+      <div slot="modal-footer" class="w-100">
+          <p class="float-left"></p>
+          <b-btn size="sm" class="float-right" style="margin-left: 5px;" variant="secondary" @click="closeModalSubject()">
+            Cancel
+          </b-btn>
+          <b-btn size="sm" class="float-right" variant="danger" @click="confirmationSubject()">
+            OK
+          </b-btn>
+      </div>
+    </b-modal>
+
+    <b-modal id="modalTopic" ref="modalTopic" title="Add Topic"
+    :header-bg-variant="headerBgVariant"
+    :header-text-variant="headerTextVariant"
+    :body-bg-variant="bodyBgVariant"
+    :body-text-variant="bodyTextVariant"
+    :footer-bg-variant="footerBgVariant"
+    :footer-text-variant="footerTextVariant">
+      <form @submit.stop.prevent="submitTopic">
+        <b-form-select v-model="addtopic.subjectId" :options="subjectOptions" required class="mb-3">
+        </b-form-select>
+        <b-form-input type="text" placeholder="Enter Topic" v-model="addtopic.topicName"></b-form-input>
+      </form>
+      <div slot="modal-footer" class="w-100">
+          <p class="float-left"></p>
+          <b-btn size="sm" class="float-right" style="margin-left: 5px;" variant="secondary" @click="closeModalTopic()">
+            Cancel
+          </b-btn>
+          <b-btn size="sm" class="float-right" variant="danger" @click="confirmationTopic()">
+            OK
+          </b-btn>
+      </div>
+    </b-modal>
+  </div>
+   <!-- Modal Component -->
+</div>
+</section>

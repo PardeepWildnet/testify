@@ -1,0 +1,16 @@
+<section class="start-test">
+  <div class="container_12" v-if="loginRole === '4'">
+    <div>
+      <div style="background-color: white; border: 3px solid #E9ECEF;">
+        <vue-good-table title="Tests" :columns="columnsTest" :rows="testList" :paginate="true" :globalSearch="true" :lineNumbers="true"
+          styleClass="table table-bordered table-striped condensed">
+          <template slot="table-row-after" slot-scope="props">
+            <td>
+              <img width="32" title="Attempt Test" @click="startTestClick(props.index)" style="cursor: pointer;" height="32" src="../../assets/dashboardfiles/starttestgrid.png">
+            </td>
+          </template>
+        </vue-good-table>
+      </div>
+    </div>
+  </div>
+</section>

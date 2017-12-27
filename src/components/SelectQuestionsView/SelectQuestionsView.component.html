@@ -1,0 +1,100 @@
+<section class="select-questions-view">
+  <!-- <router-view/> -->
+  <b-container fluid>
+    <div class="loading" v-if='loader'>Loading&#8230;</div>
+    <b-row class="mb-1 text-center">
+      <!--  <b-row class="my-1"> -->
+          <b-col style="background-color: #E9ECEF" sm="12">
+          <b-button variant="primary" style="margin: 10px; float:right" @click="confirm()">Done</b-button>
+          <input class="sliderCheckbox" id="toggle" type="checkbox">
+          <label style="cursor: pointer; font-size: large; text-align: left;" @click="filterDivClick()" for="toggle">Filters
+            <span v-for="items in filterItems" class="filterBox">{{items}}</span>
+          </label>
+          <div id="expand">
+            <b-row class="my-1">
+                <b-col sm="2">
+                  </b-col>
+                  <b-col sm="4">
+                      <b-form-select v-model="createtest.categoryId" @change.native="categoryChange()" placeholder="Select Question" :options="questionTypeOptions" class="mb-3">
+                        </b-form-select>
+                  </b-col>
+                    <b-col sm="4">
+                      <b-form-select v-model="createtest.subjectId" @change.native="subjectChange()" :options="subjectOptions" class="mb-3">
+                      </b-form-select>
+                    </b-col>
+                <b-col sm="2">
+                </b-col>
+              </b-row>
+              <b-row class="my-1">
+                  <b-col sm="2">
+                    </b-col>
+                    <b-col sm="4">
+                        <b-form-select v-model="createtest.topicId" :options="topicOptions" class="mb-3">
+                          </b-form-select>
+                    </b-col>
+                      <b-col sm="4">
+                          <b-form-select v-model="createtest.scaleId" :options="scaleOptions" class="mb-3">
+                            </b-form-select>
+                      </b-col>
+                  <b-col sm="2">
+                  </b-col>
+                </b-row>
+              <b-row class="my-1">
+                  <b-col sm="2"></b-col>
+                  <b-col sm="4">
+                      <date-picker placeholder="Select Date Range" v-model="createtest.fromdate" :config="config"></date-picker>
+                  </b-col>
+                  <b-col sm="4">
+                      <b-button variant="primary" @click="search()">Search</b-button>
+                      <b-button variant="primary" style="margin-left: 3px;" @click="reset()">Reset</b-button>
+                  </b-col>
+                  <b-col sm="2"></b-col>
+              </b-row>
+          </div>
+        </b-col>
+    </b-row>
+    <b-row>
+      <b-col sm="10"></b-col>
+      <b-col sm="2">
+        <a style="cursor: pointer;" @click="openQuesModal()"><u>{{selectedNumber.intialNum}}/{{selectedNumber.maxNum}} Question Selected</u></a>
+      </b-col>
+    </b-row>
+    <!-- </b-row> -->
+    <br>
+    <b-row class="mb-1 text-center">
+      <b-col sm="12">
+       <div style="background-color: white; border: 3px solid #E9ECEF;">
+        <vue-good-table title="" :columns="columns" :rows="rows" :lineNumbers="true" :defaultSortBy="{field: 'age', type: 'asc'}" :globalSearch="true" :paginate="true" styleClass="table condensed table-bordered table-striped">
+          <template slot="table-row" slot-scope="props">
+            <td>
+              <input type="checkbox" name="" @click="updateCheck(props.row)" :disabled="checkedQuestions.length >= selectedNumber.maxNum && !props.row.checked" v-model="props.row.checked">
+            </td>
+            <td style="text-align: left;" v-html="props.row.question"></td>
+            <td>{{ props.row.topicName }}</td>
+            <td>{{ props.row.teacherName }}</td>
+            <td>{{ props.row.scaleName }}</td>
+            <td>{{ props.row.subjectName }}</td>
+            <td>{{ props.row.createdAt | formatDate }}</td>
+            <td><img width="20" title="View" @click="getQuestionDetails(props)" style="cursor: pointer;" height="20" src="../../assets/images/view.png"></td>
+          </template>
+        </vue-good-table>
+       </div>
+      </b-col>
+    </b-row>
+  </b-container>
+  <b-modal centered ref="listOfQuesModal" size="lg" v-model="showMOdal" title="Selected Questions & Answer" :header-bg-variant="headerBgVariant" :header-text-variant="headerTextVariant" :body-bg-variant="bodyBgVariant" :body-text-variant="bodyTextVariant" :footer-bg-variant="footerBgVariant" :footer-text-variant="footerTextVariant">
+        <b-container fluid>
+            <b-pagination size="md" :total-rows="checkedQuestions.length" v-model="currentPage" :per-page="4">
+            </b-pagination>
+        </b-container>
+        <div slot="modal-footer" class="w-100">
+            <p class="float-left"></p>
+            <b-btn size="sm" class="float-right" style="margin-left: 5px;" variant="secondary" @click="closeModal()">
+                No
+            </b-btn>
+            <b-btn size="sm" class="float-right" variant="danger" @click="confirm(rows)">
+                Yes
+            </b-btn>
+        </div>
+    </b-modal>
+</section>

@@ -1,0 +1,30 @@
+<div class="container_12">
+  <div class="grid_12">
+    <router-link to="/Dashboard/Masters/ScaleList" v-if="isUserAdmin">
+      <a href="" class="dashboard-module">
+                      <img src="../../assets/images/scale.png" tppabs="http://www.xooom.pl/work/magicadmin/images/Crystal_Clear_write.gif" width="64" height="64" alt="edit" />
+                      <span>Scales</span>
+                    </a>
+    </router-link>
+    <router-link to="/Dashboard/Masters/SubjectList" v-if="isUserAdmin">
+      <a href="" class="dashboard-module">
+                      <img src="../../assets/images/subject.png" tppabs="http://www.xooom.pl/work/magicadmin/images/Crystal_Clear_files.gif" width="64" height="64" alt="edit" />
+                      <span>Subjects</span>
+                    </a>
+    </router-link>
+    <router-link to="/Dashboard/Masters/BatchList" v-if="isUserAdmin">
+      <a href="" class="dashboard-module">
+                      <img src="../../assets/images/batch.png" tppabs="http://www.xooom.pl/work/magicadmin/images/Crystal_Clear_files.gif" width="64" height="64" alt="edit" />
+                      <span>Batches</span>
+                    </a>
+    </router-link>
+    <router-link to="/Dashboard/Masters/TopicList" v-if="isUserAdmin">
+      <a href="" class="dashboard-module">
+                      <img src="../../assets/images/topic.png" tppabs="http://www.xooom.pl/work/magicadmin/images/Crystal_Clear_files.gif" width="64" height="64" alt="edit" />
+                      <span>Topics</span>
+                    </a>
+    </router-link>
+    <div style="clear: both"></div>
+  </div>
+  <div style="clear:both;"></div>
+</div>

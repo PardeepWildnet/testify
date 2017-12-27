@@ -1,0 +1,49 @@
+<section class="assign-test" v-if="loginRole === '2'">
+    <router-link to="/Dashboard/Masters/TopicList">
+      <b-button variant="primary"> Go To Topic List</b-button>
+    </router-link>
+    <div class="createtopic-container">
+      <div class="form-box">
+        <label class="headingForm">{{submitButtonText}} Topic</label>
+        <br>
+        <b-form @submit="onSubmit">
+          <b-container fluid>
+              <b-row class="my-1">
+                  <b-col sm="4"><label for="input-none">Subject:</label></b-col>
+                  <b-col sm="8">
+                      <b-form-select v-model="createtopicform.subjectId" name="Subject" v-validate="'required'" :options="subjectOptions" class="mb-3">
+                        </b-form-select>
+                        <span v-show="errors.has('Subject')" class="help is-danger">{{ errors.first('Subject') }}</span>
+                  </b-col>
+                </b-row>
+            <b-row class="my-1">
+              <b-col sm="4"><label for="input-none">Topic Name:</label></b-col>
+              <b-col sm="8">
+                <b-form-input id="name" name="Topic Name" type="text" v-validate="'required'" v-model="createtopicform.topicName" placeholder="Enter Topic Name"></b-form-input>
+                <span v-show="errors.has('Topic Name')" class="help is-danger">{{ errors.first('Topic Name') }}</span>
+              </b-col>
+            </b-row>
+            <b-row class="my-1" v-if="isEdit">
+                <b-col sm="4"><label for="input-none">Is Active?</label></b-col>
+                <b-col sm="8" style="text-align: left;">
+                  <label class="switch" style="width: 60px;">
+                        <input v-model="createtopicform.status" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </b-col>
+            </b-row>
+          </b-container>
+          <br>
+          <b-button type="submit" variant="primary">{{submitButtonText}}</b-button>
+          <b-button type="reset" v-if="!isEdit" variant="secondary">Clear</b-button>
+          <!-- <b-button @click='bindSubjects' v-if="isEdit" variant="secondary">Reset</b-button> -->
+          <div v-if="notifySuccess" style="margin-top: 10px;">
+            <span class="notification n-success"><b>{{responseMessage}}</b></span>
+          </div>
+          <div v-if="notifyError" style="margin-top: 10px;">
+            <span class="notification n-error"><b>{{errorMessage}}</b></span>
+          </div>
+        </b-form>
+      </div>
+    </div>
+  </section>

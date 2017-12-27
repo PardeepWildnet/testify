@@ -1,0 +1,54 @@
+<section class="assign-test" v-if="loginRole === '2'">
+  <router-link to="/Dashboard/Masters/SubjectList">
+    <b-button variant="primary"> Go To Subject List</b-button>
+  </router-link>
+  <div class="createsubject-container">
+    <div class="form-box">
+      <label class="headingForm">{{submitButtonText}} Subject</label>
+      <br>
+      <b-form @submit="onSubmit">
+        <b-container fluid>
+           <b-row class="my-1">
+            <b-col sm="4"><label for="input-none">Subject Name:</label></b-col>
+            <b-col sm="8">
+              <b-form-input id="name" name="Subject Name" type="text" v-model="createsubjectform.subjectName" v-validate="'required'" placeholder="Enter Subject Name"></b-form-input>
+              <span v-show="errors.has('Subject Name')" class="help is-danger">{{ errors.first('Subject Name') }}</span>
+            </b-col>
+          </b-row>
+          <b-row class="my-1" v-if="isEdit">
+              <b-col sm="4"><label for="input-none">Is Active?</label></b-col>
+              <b-col sm="8" style="text-align: left;">
+                <label class="switch" style="width: 60px;">
+                      <input v-model="createsubjectform.status" type="checkbox">
+                      <span class="slider round"></span>
+                  </label>
+              </b-col>
+          </b-row>
+          <b-row>
+          <b-col sm="8">
+            <table class="table">
+            <tbody>
+                <tr v-for="(row, index) in rows">
+                    <td><input type="text" placeholder="Enter Subject Name" v-model="row.title"></td>
+                    <td>
+                        <b-button variant="danger" v-on:click="removeElement(index);" style="cursor: pointer">Remove</b-button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </b-col>
+          </b-row>
+        </b-container>
+        <br>
+        <b-button type="submit" variant="primary">{{submitButtonText}}</b-button>
+        <b-button type="reset" v-if="!isEdit" variant="secondary">Clear</b-button>
+        <div v-if="notifySuccess" style="margin-top: 10px;">
+          <span class="notification n-success"><b>{{responseMessage}}</b></span>
+        </div>
+        <div v-if="notifyError" style="margin-top: 10px;">
+          <span class="notification n-error"><b>{{errorMessage}}</b></span>
+        </div>
+      </b-form>
+    </div>
+  </div>
+</section>
